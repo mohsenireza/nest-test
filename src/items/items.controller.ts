@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, ValidationPipe, UsePipes, ParseIntPipe, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, ValidationPipe, UsePipes, ParseIntPipe, UseGuards, Request, Req } from '@nestjs/common';
 import {CreateItemDto as CreateItemDto} from './dto/create-item.dto'
 import { ItemsService } from './items.service';
 import { Item } from './interfaces/item.interface';
@@ -7,6 +7,7 @@ import { CustomPipe } from './pipes/customPipe';
 import { RoleGuard } from './guards/role.guard';
 import { Roles } from './decorators/role.decorator';
 import { AuthGuard } from '@nestjs/passport';
+import { AdminRoleGuard } from '../auth/guards/admin.role.guard';
 
 @Controller('items')
 export class ItemsController {
@@ -20,7 +21,7 @@ export class ItemsController {
     // }
 
     @Get()
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(AuthGuard('jwt'), AdminRoleGuard)
     findAll(): Promise<Item[]> {
         return this.itemService.findAll();
     }
